@@ -4,28 +4,37 @@
 
 ## Local Framework Setup
 
-This fork expects FFmpeg frameworks to be placed in your app's root directory:
+This fork expects FFmpeg frameworks to be placed in your app directory, **sibling to the `ios/` folder**:
 
 ```
 your-app/
+├── ios/                          ← Xcode's $(SRCROOT) points here
+├── android/
 ├── ffmpeg/
 │   ├── ios/
-│   │   ├── ffmpegkit.xcframework
-│   │   ├── libavcodec.xcframework
-│   │   ├── libavdevice.xcframework
-│   │   ├── libavfilter.xcframework
-│   │   ├── libavformat.xcframework
-│   │   ├── libavutil.xcframework
-│   │   ├── libswresample.xcframework
-│   │   └── libswscale.xcframework
+│   │   ├── ffmpegkit.xcframework/
+│   │   ├── libavcodec.xcframework/
+│   │   ├── libavdevice.xcframework/
+│   │   ├── libavfilter.xcframework/
+│   │   ├── libavformat.xcframework/
+│   │   ├── libavutil.xcframework/
+│   │   ├── libswresample.xcframework/
+│   │   └── libswscale.xcframework/
 │   └── android/
 │       └── ffmpeg-kit.aar
 ├── node_modules/
-│   └── ffmpeg-kit-react-native/
 └── ...
 ```
 
-The podspec and build.gradle are configured to automatically find frameworks at `../../ffmpeg/` relative to the installed package.
+### How it works
+
+**iOS:** The podspec uses `$(SRCROOT)/../ffmpeg/ios/` which resolves at Xcode build time. This works reliably with EAS/Expo builds and hoisted node_modules because `$(SRCROOT)` always points to the iOS project directory.
+
+**Android:** The build.gradle uses a path relative to the module directory to find AAR files.
+
+### Obtaining FFmpeg frameworks
+
+Download pre-built frameworks from [FFmpegKit Releases](https://github.com/arthenica/ffmpeg-kit/releases) or build them yourself using the [ffmpeg-kit build scripts](https://github.com/arthenica/ffmpeg-kit).
 
 ---
 
