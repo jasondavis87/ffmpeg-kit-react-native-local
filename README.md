@@ -59,137 +59,19 @@ The frameworks are LGPL-compliant, built with VideoToolbox (iOS) and MediaCodec 
 - Includes Typescript definitions
 - Licensed under `LGPL 3.0` by default, some packages licensed by `GPL v3.0` effectively
 
-### 2. Installation
+### 2. Requirements
 
-```sh
-yarn add ffmpeg-kit-react-native
-```
-
-#### 2.1 Packages
-
-`FFmpeg` includes built-in encoders for some popular formats. However, there are certain external libraries that needs
-to be enabled in order to encode specific formats/codecs. For example, to encode an `mp3` file you need `lame` or
-`shine` library enabled. You have to install a `ffmpeg-kit-react-native` package that has at least one of them inside.
-To encode an `h264` video, you need to install a package with `x264` inside. To encode `vp8` or `vp9` videos, you need
-a `ffmpeg-kit-react-native` package with `libvpx` inside.
-
-`ffmpeg-kit` provides eight packages that include different sets of external libraries. These packages are named
-according to the external libraries included. Refer to the
-[Packages](https://github.com/arthenica/ffmpeg-kit/wiki/Packages) wiki page to see the names of those
-packages and external libraries included in each one of them.
-
-##### 2.1.1 Package Names
-
-The following table shows all package names and their respective API levels, iOS deployment targets defined in
-`ffmpeg-kit-react-native`.
-
-<table>
-<thead>
-<tr>
-<th align="center">Package</th>
-<th align="center" colspan="3">Main Release</th>
-<th align="center" colspan="3">LTS Release</th>
-</tr>
-<tr>
-<th align="center"></th>
-<th align="center">Name</th>
-<th align="center">Android<br>API Level</th>
-<th align="center">iOS Minimum<br>Deployment Target</th>
-<th align="center">Name</th>
-<th align="center">Android<br>API Level</th>
-<th align="center">iOS Minimum<br>Deployment Target</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td align="center">min</td>
-<td align="center">min</td>
-<td align="center">24</td>
-<td align="center">12.1</td>
-<td align="center">min-lts</td>
-<td align="center">16</td>
-<td align="center">10</td>
-</tr>
-<tr>
-<td align="center">min-gpl</td>
-<td align="center">min-gpl</td>
-<td align="center">24</td>
-<td align="center">12.1</td>
-<td align="center">min-gpl-lts</td>
-<td align="center">16</td>
-<td align="center">10</td>
-</tr>
-<tr>
-<td align="center">https</td>
-<td align="center">(*) https</td>
-<td align="center">24</td>
-<td align="center">12.1</td>
-<td align="center">https-lts</td>
-<td align="center">16</td>
-<td align="center">10</td>
-</tr>
-<tr>
-<td align="center">https-gpl</td>
-<td align="center">https-gpl</td>
-<td align="center">24</td>
-<td align="center">12.1</td>
-<td align="center">https-gpl-lts</td>
-<td align="center">16</td>
-<td align="center">10</td>
-</tr>
-<tr>
-<td align="center">audio</td>
-<td align="center">audio</td>
-<td align="center">24</td>
-<td align="center">12.1</td>
-<td align="center">audio-lts</td>
-<td align="center">16</td>
-<td align="center">10</td>
-</tr>
-<tr>
-<td align="center">video</td>
-<td align="center">video</td>
-<td align="center">24</td>
-<td align="center">12.1</td>
-<td align="center">video-lts</td>
-<td align="center">16</td>
-<td align="center">10</td>
-</tr>
-<tr>
-<td align="center">full</td>
-<td align="center">full</td>
-<td align="center">24</td>
-<td align="center">12.1</td>
-<td align="center">full-lts</td>
-<td align="center">16</td>
-<td align="center">10</td>
-</tr>
-<tr>
-<td align="center">full-gpl</td>
-<td align="center">full-gpl</td>
-<td align="center">24</td>
-<td align="center">12.1</td>
-<td align="center">full-gpl-lts</td>
-<td align="center">16</td>
-<td align="center">10</td>
-</tr>
-</tbody>
-</table>
-
-(*) - Main `https` package is the default package
-
-#### 2.2 Selecting a Package (This Fork)
-
-This fork uses local framework files instead of CocoaPods/Maven dependencies. To use a specific package variant, download the corresponding frameworks from [FFmpegKit Releases](https://github.com/arthenica/ffmpeg-kit/releases) and place them in your app's `ffmpeg/ios/` and `ffmpeg/android/` directories.
-
-The package variant is determined by which framework files you provide, not by configuration.
+- **iOS:** iOS 13.0+
+- **Android:** API Level 24+ (Android 7.0+)
+- **Expo:** SDK 54+ with EAS Build
+- **React Native:** 0.70+
 
 ### 3. Using
 
 1. Execute FFmpeg commands.
 
     ```js
-    import { FFmpegKit } from 'ffmpeg-kit-react-native';
+    import { FFmpegKit, ReturnCode } from 'ffmpeg-kit-react-native-local';
 
     FFmpegKit.execute('-i file1.mp4 -c:v mpeg4 file2.mp4').then(async (session) => {
       const returnCode = await session.getReturnCode();

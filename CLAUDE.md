@@ -4,7 +4,11 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Project Overview
 
-React Native wrapper library for FFmpeg Kit, providing FFmpeg and FFprobe capabilities to React Native applications on iOS and Android. Built on top of the ffmpeg-kit project with comprehensive TypeScript support.
+Fork of ffmpeg-kit-react-native with **bundled FFmpeg frameworks** via Git LFS. Unlike the original which uses CocoaPods/Maven, this package includes pre-built xcframeworks and AAR files directly, making it work reliably with Expo/EAS builds.
+
+## Repository
+
+https://github.com/jasondavis87/ffmpeg-kit-react-native-local
 
 ## Common Commands
 
@@ -14,61 +18,56 @@ yarn test
 
 # Run linting
 yarn lint
-
-# Release new version (uses release-it with conventional changelog)
-yarn release
 ```
 
 ## Architecture
 
-### Core Structure
+### Bundled Frameworks
 
-- **`src/index.js`** - Main JavaScript implementation (~3,300 lines). Contains all exported classes, the native bridge logic, and callback management via NativeEventEmitter.
-- **`src/index.d.ts`** - TypeScript type definitions for the entire API.
-- **`android/`** - Android native module (Java) in `com.arthenica.ffmpegkit.reactnative` package.
-- **`ios/`** - iOS native module (Objective-C) with FFmpegKitReactNativeModule.
-
-### Key Classes
-
-**Session Management:**
-- `FFmpegSession` - FFmpeg command execution
-- `FFprobeSession` - FFprobe command execution
-- `MediaInformationSession` - Media metadata extraction
-- `AbstractSession` - Base implementation with shared logic
-
-**Main APIs:**
-- `FFmpegKit` - Execute FFmpeg commands (sync/async)
-- `FFprobeKit` - Execute FFprobe commands and get media info
-- `FFmpegKitConfig` - Global configuration, logging, callbacks, session history
-
-**Data Models:**
-- `MediaInformation` / `StreamInformation` / `Chapter` - Parsed media metadata
-- `Log` / `Statistics` - Runtime execution data
-- `ReturnCode` - Exit code analysis
-
-### Callback System
-
-The library uses in-memory Maps to store session-specific callbacks, with a NativeEventEmitter broadcasting log/statistics/completion events. Sessions are identified by `sessionId` and callbacks are invoked then cleaned up on completion.
-
-### API Patterns
-
-```javascript
-// Synchronous (Promise-based)
-const session = await FFmpegKit.execute('-i input.mp4 output.mp4');
-
-// Asynchronous with callbacks
-FFmpegKit.executeAsync(command, onComplete, onLog, onStatistics);
-
-// Media information
-const session = await FFprobeKit.getMediaInformation(path);
-const info = session.getMediaInformation();
 ```
+ios/Frameworks/           # iOS xcframeworks (Git LFS)
+  ├── ffmpegkit.xcframework/
+  ├── libavcodec.xcframework/
+  └── ...
+
+android/libs/             # Android AAR (Git LFS)
+  └── ffmpeg-kit.aar
+```
+
+### Native Bridge
+
+- **`ios/FFmpegKitReactNativeModule.{h,m}`** - Objective-C bridge to FFmpegKit
+- **`android/src/main/java/`** - Java bridge to FFmpegKit
+
+### JavaScript Layer
+
+- **`src/index.js`** - Main JS implementation with NativeEventEmitter callbacks
+- **`src/index.d.ts`** - TypeScript definitions
+
+## iOS Configuration (Podspec)
+
+Key settings in `ffmpeg-kit-react-native.podspec`:
+- `vendored_frameworks = 'ios/Frameworks/*.xcframework'`
+- Uses `$(PODS_TARGET_SRCROOT)` for header search paths (reliable in EAS)
+- System frameworks: AudioToolbox, AVFoundation, CoreMedia, VideoToolbox
+- System libraries: z, bz2, iconv
+
+## Android Configuration (build.gradle)
+
+Key settings in `android/build.gradle`:
+- Uses `files("$projectDir/libs/ffmpeg-kit.aar")` for local AAR
+- Requires `api 'com.arthenica:smart-exception-java:0.2.1'` (transitive dependency)
+- Uses `api` scope so classes are available to consuming app at runtime
 
 ## Platform Requirements
 
-- **Android:** minSdkVersion 24 (16 for LTS), compileSdkVersion 33
-- **iOS:** Deployment target 13.0 (10 for LTS)
+- **iOS:** 13.0+
+- **Android:** API 24+ (Android 7.0+)
+- **Expo:** SDK 54+ with EAS Build
 
-## Package Variants
+## Key Differences from Original
 
-Eight package variants available with different codec sets (min, min-gpl, https, https-gpl, audio, video, full, full-gpl). The podspec defaults to `ffmpeg-kit-full-gpl`.
+1. Frameworks bundled in package (no external downloads needed)
+2. No CocoaPods subspecs or Maven package variants
+3. Uses direct file paths instead of dependency resolution
+4. Transitive dependencies must be explicitly declared
