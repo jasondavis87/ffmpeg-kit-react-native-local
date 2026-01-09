@@ -136,6 +136,6 @@ repositories {
 dependencies {
   api 'com.facebook.react:react-native:+'
 
-  // Bundled FFmpeg AAR files from this package's libs/ directory
-  implementation fileTree(dir: ffmpegLibsDir, include: ['*.aar'])
+  // Bundled FFmpeg AAR - use api scope so classes are available to consuming app at runtime
+  api(name: 'ffmpeg-kit', ext: 'aar')
 }
