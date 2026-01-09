@@ -15,8 +15,6 @@ def safeExtGet(String prop, String fallback) {
   rootProject.ext.has(prop) ? rootProject.ext.get(prop) : fallback
 }
 
-// Path to bundled FFmpeg AAR files (included in this package)
-def ffmpegLibsDir = new File(projectDir, 'libs')
 
 android {
   if (project.android.hasProperty("namespace")) {
@@ -61,11 +59,6 @@ android {
 repositories {
   google()
   mavenCentral()
-
-  // Bundled FFmpeg AAR files from this package's libs/ directory
-  flatDir {
-    dirs ffmpegLibsDir
-  }
 
   def found = false
   def defaultDir = null
@@ -136,6 +129,6 @@ repositories {
 dependencies {
   api 'com.facebook.react:react-native:+'
 
-  // Bundled FFmpeg AAR - use api scope so classes are available to consuming app at runtime
-  api(name: 'ffmpeg-kit', ext: 'aar')
+  // Bundled FFmpeg AAR - use absolute path with api scope for runtime availability
+  api files("$projectDir/libs/ffmpeg-kit.aar")
 }
