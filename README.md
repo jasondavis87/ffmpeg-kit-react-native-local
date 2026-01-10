@@ -52,7 +52,7 @@ This package includes pre-built FFmpeg frameworks:
 - libswscale.xcframework
 
 **Android** (`android/libs/`):
-- ffmpeg-kit.aar
+- ffmpeg-kit.aar (compiled with 16KB page size support using NDK r25 from [AliAkhgar/ffmpeg-kit-16KB](https://github.com/AliAkhgar/ffmpeg-kit-16KB))
 
 The frameworks are LGPL-compliant, built with hardware acceleration (VideoToolbox on iOS, MediaCodec on Android), without GPL codecs.
 
@@ -67,16 +67,18 @@ The frameworks are LGPL-compliant, built with hardware acceleration (VideoToolbo
 
 ## Building Frameworks (For Reference)
 
-If you need to rebuild the frameworks, use the [ffmpeg-kit](https://github.com/arthenica/ffmpeg-kit) build scripts.
+If you need to rebuild the frameworks:
+- **iOS:** Use [arthenica/ffmpeg-kit](https://github.com/arthenica/ffmpeg-kit)
+- **Android (16KB page size):** Use [AliAkhgar/ffmpeg-kit-16KB](https://github.com/AliAkhgar/ffmpeg-kit-16KB)
 
 ### Prerequisites
 
 - Android Studio with SDK installed
-- NDK 25.2.9519653: `sdkmanager "ndk;25.2.9519653"`
+- NDK r25 with 16KB page size support (see [AliAkhgar/ffmpeg-kit-16KB](https://github.com/AliAkhgar/ffmpeg-kit-16KB) for download links)
 - Java 17
 - Xcode (for iOS)
 
-### Android Build
+### Android Build (16KB page size)
 
 ```bash
 ANDROID_NDK_ROOT=$HOME/Library/Android/sdk/ndk/25.2.9519653 \
